@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Server — Response OK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080b0f;
+      --surface: #0e1318;
+      --surface2: #141b22;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --green: #00e57a;
+      --green-dim: rgba(0, 229, 122, 0.12);
+      --green-glow: rgba(0, 229, 122, 0.06);
+      --amber: #f5a623;
+      --amber-dim: rgba(245, 166, 35, 0.12);
+      --red: #ff4d4d;
+      --red-dim: rgba(255, 77, 77, 0.1);
+      --blue: #3d9eff;
+      --blue-dim: rgba(61, 158, 255, 0.1);
+      --text: #e2e8f0;
+      --muted: #5a6a7a;
+      --muted2: #8899aa;
+      --mono: 'JetBrains Mono', monospace;
+      --display: 'Syne', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* GRID PATTERN BG */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 229, 122, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 122, 0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.5
+      }
+    }
+
+    .topbar-title {
+      font-family: var(--display);
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .topbar-right {
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+    }
+
+    .topbar-right span {
+      color: var(--muted2);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 4rem 0 3rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .hero-status {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--green-dim);
+      border: 1px solid rgba(0, 229, 122, 0.25);
+      border-radius: 2px;
+      padding: .35rem .8rem;
+      font-size: .7rem;
+      color: var(--green);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -.02em;
+      color: #fff;
+    }
+
+    .hero h1 span {
+      color: var(--green);
+    }
+
+    .hero-sub {
+      font-size: .78rem;
+      color: var(--muted2);
+      margin-top: 1rem;
+      max-width: 360px;
+      line-height: 1.8;
+      letter-spacing: .02em;
+    }
+
+    .response-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 1.5rem;
+      text-align: center;
+      min-width: 160px;
+    }
+
+    .response-code {
+      font-family: var(--display);
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(0, 229, 122, 0.4);
+    }
+
+    .response-label {
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-top: .5rem;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1px;
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 1.5rem;
+    }
+
+    .card.col-4 {
+      grid-column: span 4;
+    }
+
+    .card.col-6 {
+      grid-column: span 6;
+    }
+
+    .card.col-8 {
+      grid-column: span 8;
+    }
+
+    .card.col-12 {
+      grid-column: span 12;
+    }
+
+    .card-label {
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .card-label::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* KV ROWS */
+    .kv {
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+    }
+
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      font-size: .75rem;
+    }
+
+    .kv-key {
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .kv-val {
+      color: var(--text);
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .kv-val.green {
+      color: var(--green);
+    }
+
+    .kv-val.amber {
+      color: var(--amber);
+    }
+
+    .kv-val.blue {
+      color: var(--blue);
+    }
+
+    .kv-val.red {
+      color: var(--red);
+    }
+
+    /* BIG STAT */
+    .big-stat {
+      font-family: var(--display);
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .big-stat-sub {
+      font-size: .7rem;
+      color: var(--muted);
+      letter-spacing: .06em;
+      margin-top: .4rem;
+    }
+
+    /* BAR */
+    .bar-wrap {
+      margin-top: .75rem;
+    }
+
+    .bar-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: .68rem;
+      color: var(--muted);
+      margin-bottom: .35rem;
+    }
+
+    .bar-track {
+      height: 4px;
+      background: var(--border2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .bar-fill.green {
+      background: var(--green);
+    }
+
+    .bar-fill.amber {
+      background: var(--amber);
+    }
+
+    .bar-fill.blue {
+      background: var(--blue);
+    }
+
+    /* METHODS */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .method-pill {
+      padding: .5rem .25rem;
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      text-align: center;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .05em;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .method-pill:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-dim);
+    }
+
+    .method-pill.get {
+      color: var(--green);
+      border-color: rgba(0, 229, 122, 0.25);
+      background: var(--green-dim);
+    }
+
+    .method-pill.post {
+      color: var(--amber);
+      border-color: rgba(245, 166, 35, 0.25);
+      background: var(--amber-dim);
+    }
+
+    .method-pill.put {
+      color: var(--blue);
+      border-color: rgba(61, 158, 255, 0.25);
+      background: var(--blue-dim);
+    }
+
+    .method-pill.del {
+      color: var(--red);
+      border-color: rgba(255, 77, 77, 0.25);
+      background: var(--red-dim);
+    }
+
+    /* LOG */
+    .log-feed {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .log-feed::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .log-feed::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .log-feed::-webkit-scrollbar-thumb {
+      background: var(--border2);
+    }
+
+    .log-entry {
+      display: flex;
+      gap: .75rem;
+      font-size: .7rem;
+      line-height: 1.5;
+      align-items: baseline;
+    }
+
+    .log-time {
+      color: var(--muted);
+      flex-shrink: 0;
+      font-size: .65rem;
+    }
+
+    .log-method {
+      flex-shrink: 0;
+      width: 2.8rem;
+      font-weight: 500;
+    }
+
+    .log-path {
+      color: var(--muted2);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .log-status {
+      flex-shrink: 0;
+    }
+
+    .s200 {
+      color: var(--green);
+    }
+
+    .s201 {
+      color: var(--green);
+    }
+
+    .s304 {
+      color: var(--blue);
+    }
+
+    .s400 {
+      color: var(--amber);
+    }
+
+    .s404 {
+      color: var(--amber);
+    }
+
+    .s500 {
+      color: var(--red);
+    }
+
+    /* HEADERS TABLE */
+    .headers-list {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+
+    .header-row {
+      display: flex;
+      gap: .5rem;
+      font-size: .7rem;
+    }
+
+    .header-key {
+      color: var(--blue);
+      flex-shrink: 0;
+      min-width: 160px;
+    }
+
+    .header-val {
+      color: var(--muted2);
+      word-break: break-all;
+    }
+
+    /* ENDPOINTS */
+    .endpoints {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .ep-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .73rem;
+      padding: .45rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+
+    .ep-row:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+    }
+
+    .ep-method {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: 2px 6px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .ep-method.g {
+      background: var(--green-dim);
+      color: var(--green);
+    }
+
+    .ep-method.p {
+      background: var(--amber-dim);
+      color: var(--amber);
+    }
+
+    .ep-method.d {
+      background: var(--red-dim);
+      color: var(--red);
+    }
+
+    .ep-path {
+      color: var(--text);
+    }
+
+    .ep-desc {
+      color: var(--muted);
+      margin-left: auto;
+      font-size: .68rem;
+    }
+
+    /* PING BLOCK */
+    .ping-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: .75rem;
+    }
+
+    .ping-bar {
+      flex: 1;
+      height: 28px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ping-fill {
+      height: 100%;
+      background: var(--green-dim);
+      border-right: 2px solid var(--green);
+      animation: pingAnim 3s ease-in-out infinite;
+    }
+
+    @keyframes pingAnim {
+      0% {
+        width: 0%
+      }
+
+      40% {
+        width: 72%
+      }
+
+      60% {
+        width: 72%
+      }
+
+      100% {
+        width: 0%
+      }
+    }
+
+    .ping-val {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green);
+      min-width: 64px;
+      text-align: right;
+    }
+
+    /* TICKER */
+    .ticker {
+      display: flex;
+      gap: 2rem;
+      overflow: hidden;
+    }
+
+    .ticker-item {
+      display: flex;
+      gap: .5rem;
+      font-size: .7rem;
+      white-space: nowrap;
+    }
+
+    .ticker-key {
+      color: var(--muted);
+    }
+
+    .ticker-val {
+      color: var(--text);
+    }
+
+    /* COPY BTN */
+    .copy-btn {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 3px 8px;
+      cursor: pointer;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      transition: all .15s;
+      float: right;
+      margin-top: -.25rem;
+    }
+
+    .copy-btn:hover {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .68rem;
+      color: var(--muted);
+    }
+
+    .footer a {
+      color: var(--muted2);
+      text-decoration: none;
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .card.col-4,
+      .card.col-6,
+      .card.col-8 {
+        grid-column: span 12;
+      }
+
+      .method-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="status-dot"></div>
+      <div class="topbar-title">Test Server</div>
+    </div>
+    <div class="topbar-right">
+      HOST <span id="tb-host">localhost:3000</span> &nbsp;·&nbsp;
+      PID <span id="tb-pid">4821</span> &nbsp;·&nbsp;
+      <span id="tb-time">—</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div>
+        <div class="hero-status">Server is running</div>
+        <h1>HTTP <span>200</span><br>All Systems Go</h1>
+        <p class="hero-sub">This is a sample test server response page. Use it to verify routing, headers, static file
+          serving, and request logging.</p>
+      </div>
+      <div class="response-badge">
+        <div class="response-code" id="resp-code">200</div>
+        <div class="response-label">Status OK</div>
+        <div style="margin-top:1rem; font-size:.65rem; color:var(--muted);">
+          <div id="resp-time-display">0ms</div>
+          <div style="margin-top:.2rem">response time</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="grid">
+      <!-- Uptime -->
+      <div class="card col-4">
+        <div class="card-label">Uptime</div>
+        <div class="big-stat" id="uptime">00:00:00</div>
+        <div class="big-stat-sub">hh:mm:ss since boot</div>
+        <div class="bar-wrap">
+          <div class="bar-label-row"><span>Availability</span><span>100%</span></div>
+          <div class="bar-track">
+            <div class="bar-fill green" style="width:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requests -->
+      <div class="card col-4">
+        <div class="card-label">Requests served</div>
+        <div class="big-stat" id="req-count">0</div>
+        <div class="big-stat-sub">since page load</div>
+        <div class="bar-wrap">
+          <div class="bar-label-row"><span>Success rate</span><span id="success-rate">100%</span></div>
+          <div class="bar-track">
+            <div class="bar-fill green" id="success-bar" style="width:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ping -->
+      <div class="card col-4">
+        <div class="card-label">Simulated latency</div>
+        <div class="big-stat green" id="latency-val" style="color:var(--green)">—</div>
+        <div class="big-stat-sub">avg response time</div>
+        <div class="ping-row">
+          <div class="ping-bar">
+            <div class="ping-fill"></div>
+          </div>
+          <div class="ping-val" id="ping-val">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="grid" style="margin-top:1px">
+      <!-- Request info -->
+      <div class="card col-6">
+        <div class="card-label">Request info</div>
+        <div class="kv">
+          <div class="kv-row"><span class="kv-key">Method</span><span class="kv-val green">GET</span></div>
+          <div class="kv-row"><span class="kv-key">URL</span><span class="kv-val" id="req-url">/</span></div>
+          <div class="kv-row"><span class="kv-key">Protocol</span><span class="kv-val">HTTP/1.1</span></div>
+          <div class="kv-row"><span class="kv-key">User Agent</span><span class="kv-val" id="ua-val"
+              style="font-size:.65rem">—</span></div>
+          <div class="kv-row"><span class="kv-key">Language</span><span class="kv-val" id="lang-val">—</span></div>
+          <div class="kv-row"><span class="kv-key">Encoding</span><span class="kv-val">gzip, deflate, br</span></div>
+          <div class="kv-row"><span class="kv-key">Connection</span><span class="kv-val amber">keep-alive</span></div>
+          <div class="kv-row"><span class="kv-key">Timestamp</span><span class="kv-val" id="ts-val">—</span></div>
+        </div>
+      </div>
+
+      <!-- Response headers -->
+      <div class="card col-6">
+        <div class="card-label">Response headers <button class="copy-btn" onclick="copyHeaders()">copy</button></div>
+        <div class="headers-list" id="headers-list">
+          <div class="header-row"><span class="header-key">Content-Type:</span><span class="header-val">text/html;
+              charset=utf-8</span></div>
+          <div class="header-row"><span class="header-key">Cache-Control:</span><span class="header-val">no-store,
+              no-cache</span></div>
+          <div class="header-row"><span class="header-key">X-Powered-By:</span><span
+              class="header-val">TestServer/1.0</span></div>
+          <div class="header-row"><span class="header-key">X-Request-ID:</span><span class="header-val"
+              id="req-id">—</span></div>
+          <div class="header-row"><span class="header-key">Access-Control-Allow-Origin:</span><span
+              class="header-val">*</span></div>
+          <div class="header-row"><span class="header-key">X-Response-Time:</span><span class="header-val"
+              id="resp-time-header">—</span></div>
+          <div class="header-row"><span class="header-key">Connection:</span><span class="header-val">keep-alive</span>
+          </div>
+          <div class="header-row"><span class="header-key">Transfer-Encoding:</span><span
+              class="header-val">chunked</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3 -->
+    <div class="grid" style="margin-top:1px">
+      <!-- HTTP Methods -->
+      <div class="card col-4">
+        <div class="card-label">Supported methods</div>
+        <div class="method-grid">
+          <div class="method-pill get">GET</div>
+          <div class="method-pill post">POST</div>
+          <div class="method-pill put">PUT</div>
+          <div class="method-pill del">DELETE</div>
+          <div class="method-pill">PATCH</div>
+          <div class="method-pill">HEAD</div>
+          <div class="method-pill">OPTIONS</div>
+          <div class="method-pill">CONNECT</div>
+        </div>
+      </div>
+
+      <!-- Environment -->
+      <div class="card col-4">
+        <div class="card-label">Environment</div>
+        <div class="kv">
+          <div class="kv-row"><span class="kv-key">NODE_ENV</span><span class="kv-val amber">development</span></div>
+          <div class="kv-row"><span class="kv-key">Port</span><span class="kv-val">3000</span></div>
+          <div class="kv-row"><span class="kv-key">Version</span><span class="kv-val">v1.0.0-test</span></div>
+          <div class="kv-row"><span class="kv-key">Runtime</span><span class="kv-val blue">Node.js 20.x</span></div>
+          <div class="kv-row"><span class="kv-key">Platform</span><span class="kv-val" id="platform-val">—</span></div>
+          <div class="kv-row"><span class="kv-key">Timezone</span><span class="kv-val" id="tz-val">—</span></div>
+          <div class="kv-row"><span class="kv-key">CORS</span><span class="kv-val green">enabled</span></div>
+          <div class="kv-row"><span class="kv-key">Auth</span><span class="kv-val red">disabled</span></div>
+        </div>
+      </div>
+
+      <!-- Memory simulation -->
+      <div class="card col-4">
+        <div class="card-label">Resource usage (simulated)</div>
+        <div class="bar-wrap" style="margin-top:0">
+          <div class="bar-label-row"><span>CPU</span><span id="cpu-pct">—</span></div>
+          <div class="bar-track">
+            <div class="bar-fill green" id="cpu-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bar-wrap" style="margin-top:1rem">
+          <div class="bar-label-row"><span>Memory</span><span id="mem-pct">—</span></div>
+          <div class="bar-track">
+            <div class="bar-fill amber" id="mem-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bar-wrap" style="margin-top:1rem">
+          <div class="bar-label-row"><span>Disk I/O</span><span id="disk-pct">—</span></div>
+          <div class="bar-track">
+            <div class="bar-fill blue" id="disk-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bar-wrap" style="margin-top:1rem">
+          <div class="bar-label-row"><span>Network</span><span id="net-pct">—</span></div>
+          <div class="bar-track">
+            <div class="bar-fill green" id="net-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 4: Endpoints + Log -->
+    <div class="grid" style="margin-top:1px">
+      <div class="card col-5">
+        <div class="card-label">Test endpoints</div>
+        <div class="endpoints">
+          <div class="ep-row"><span class="ep-method g">GET</span><span class="ep-path">/</span><span
+              class="ep-desc">Index page</span></div>
+          <div class="ep-row"><span class="ep-method g">GET</span><span class="ep-path">/health</span><span
+              class="ep-desc">Health check</span></div>
+          <div class="ep-row"><span class="ep-method g">GET</span><span class="ep-path">/api/v1/status</span><span
+              class="ep-desc">Server status</span></div>
+          <div class="ep-row"><span class="ep-method p">POST</span><span class="ep-path">/api/v1/echo</span><span
+              class="ep-desc">Echo body</span></div>
+          <div class="ep-row"><span class="ep-method g">GET</span><span class="ep-path">/api/v1/headers</span><span
+              class="ep-desc">Return headers</span></div>
+          <div class="ep-row"><span class="ep-method p">POST</span><span class="ep-path">/api/v1/upload</span><span
+              class="ep-desc">File upload test</span></div>
+          <div class="ep-row"><span class="ep-method g">GET</span><span class="ep-path">/static/*</span><span
+              class="ep-desc">Static assets</span></div>
+          <div class="ep-row"><span class="ep-method d">DEL</span><span class="ep-path">/api/v1/reset</span><span
+              class="ep-desc">Reset counters</span></div>
+        </div>
+      </div>
+
+      <div class="card col-7">
+        <div class="card-label">Access log (live simulation)</div>
+        <div class="log-feed" id="log-feed"></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div>Test Server v1.0.0 &nbsp;·&nbsp; Not for production use</div>
+      <div id="footer-time">—</div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── INIT ──
+    const start = Date.now();
+    const reqId = 'req_' + Math.random().toString(36).slice(2, 10).toUpperCase();
+    const respMs = Math.floor(Math.random() * 40) + 8;
+    const startTime = new Date();
+
+    document.getElementById('req-id').textContent = reqId;
+    document.getElementById('req-url').textContent = window.location.pathname || '/';
+    document.getElementById('ua-val').textContent = navigator.userAgent.slice(0, 50) + '…';
+    document.getElementById('lang-val').textContent = navigator.language;
+    document.getElementById('platform-val').textContent = navigator.platform || 'unknown';
+    document.getElementById('tz-val').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById('resp-time-header').textContent = respMs + 'ms';
+    document.getElementById('resp-time-display').textContent = respMs + 'ms';
+    document.getElementById('latency-val').textContent = respMs + 'ms';
+    document.getElementById('ping-val').textContent = respMs + 'ms';
+
+    function fmt(d) {
+      return d.toLocaleTimeString('en-US', {hour12: false}) + '.' + String(d.getMilliseconds()).padStart(3, '0');
+    }
+
+    // ── UPTIME ──
+    function updateUptime() {
+      const s = Math.floor((Date.now() - start) / 1000);
+      const h = String(Math.floor(s / 3600)).padStart(2, '0');
+      const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const sec = String(s % 60).padStart(2, '0');
+      document.getElementById('uptime').textContent = `${h}:${m}:${sec}`;
+    }
+
+    // ── CLOCK ──
+    function updateClock() {
+      const now = new Date();
+      const t = now.toISOString();
+      document.getElementById('tb-time').textContent = now.toLocaleTimeString('en-GB');
+      document.getElementById('ts-val').textContent = t;
+      document.getElementById('footer-time').textContent = t;
+    }
+
+    // ── RESOURCE BARS (simulated fluctuation) ──
+    const resources = {
+      cpu: {el: document.getElementById('cpu-bar'), pct: document.getElementById('cpu-pct'), base: 18, amp: 12},
+      mem: {el: document.getElementById('mem-bar'), pct: document.getElementById('mem-pct'), base: 42, amp: 6},
+      disk: {el: document.getElementById('disk-bar'), pct: document.getElementById('disk-pct'), base: 8, amp: 15},
+      net: {el: document.getElementById('net-bar'), pct: document.getElementById('net-pct'), base: 22, amp: 18},
+    };
+    function updateResources() {
+      const t = Date.now() / 1000;
+      Object.entries(resources).forEach(([k, r]) => {
+        const v = Math.round(Math.min(95, Math.max(2, r.base + Math.sin(t * (0.3 + r.amp * 0.01)) * r.amp + (Math.random() - 0.5) * 4)));
+        r.el.style.width = v + '%';
+        r.pct.textContent = v + '%';
+      });
+    }
+
+    // ── REQUEST COUNTER ──
+    let reqCount = 0, errCount = 0;
+    function updateReqCount() {
+      document.getElementById('req-count').textContent = reqCount;
+      const rate = reqCount === 0 ? 100 : Math.round(((reqCount - errCount) / reqCount) * 100);
+      document.getElementById('success-rate').textContent = rate + '%';
+      document.getElementById('success-bar').style.width = rate + '%';
+    }
+
+    // ── LOG FEED ──
+    const methods = ['GET', 'GET', 'GET', 'POST', 'GET', 'PUT', 'POST', 'DELETE', 'GET', 'PATCH'];
+    const paths = ['/', 'api/v1/status', '/api/v1/echo', '/health', '/static/app.js', '/api/v1/upload', '/api/v1/headers', '/api/v1/items/42', '/favicon.ico', '/static/style.css'];
+    const statuses = [200, 200, 200, 201, 200, 304, 200, 400, 200, 404, 500];
+    const statusWt = [0.7, 0.7, 0.7, 0.8, 0.7, 0.5, 0.7, 0.08, 0.7, 0.04, 0.01];
+
+    function weightedStatus() {
+      let r = Math.random(), cumulative = 0;
+      for (let i = 0; i < statuses.length; i++) {cumulative += statusWt[i]; if (r < cumulative) return statuses[i];}
+      return 200;
+    }
+
+    function addLog() {
+      const method = methods[Math.floor(Math.random() * methods.length)];
+      const path = paths[Math.floor(Math.random() * paths.length)];
+      const status = weightedStatus();
+      const ms = Math.floor(Math.random() * 180) + 4;
+      const now = new Date();
+      reqCount++;
+      if (status >= 400) errCount++;
+      updateReqCount();
+
+      const el = document.createElement('div');
+      el.className = 'log-entry';
+      const cls = status >= 500 ? 's500' : status >= 400 ? 's400' : status >= 300 ? 's304' : status === 201 ? 's201' : 's200';
+      const mColor = method === 'GET' ? 'var(--green)' : method === 'POST' ? 'var(--amber)' : method === 'DELETE' ? 'var(--red)' : 'var(--blue)';
+      el.innerHTML = `
+      <span class="log-time">${fmt(now)}</span>
+      <span class="log-method" style="color:${mColor}">${method}</span>
+      <span class="log-path">/${path}</span>
+      <span class="log-status ${cls}">${status}</span>
+      <span class="log-time">${ms}ms</span>`;
+
+      const feed = document.getElementById('log-feed');
+      feed.prepend(el);
+      if (feed.children.length > 60) feed.lastElementChild.remove();
+    }
+
+    // ── COPY HEADERS ──
+    function copyHeaders() {
+      const text = `Content-Type: text/html; charset=utf-8\nCache-Control: no-store, no-cache\nX-Powered-By: TestServer/1.0\nX-Request-ID: ${reqId}\nAccess-Control-Allow-Origin: *\nX-Response-Time: ${respMs}ms\nConnection: keep-alive\nTransfer-Encoding: chunked`;
+      navigator.clipboard.writeText(text).catch(() => { });
+    }
+
+    // ── INTERVALS ──
+    updateClock(); updateUptime(); updateResources();
+    addLog(); addLog(); addLog();
+
+    setInterval(updateClock, 1000);
+    setInterval(updateUptime, 1000);
+    setInterval(updateResources, 1500);
+    setInterval(addLog, () => 800 + Math.random() * 2000);
+
+    // randomise log interval
+    (function scheduleLog() {
+      const delay = 600 + Math.random() * 1800;
+      setTimeout(() => {addLog(); scheduleLog();}, delay);
+    })();
+  </script>
+</body>
+
+</html>
