@@ -1,0 +1,33 @@
+# code: language=ansible
+---
+- name: Test block
+  block:
+
+    - name: Verify API token
+      ansible.builtin.assert:
+        that:
+          - digitalocean_token is string
+          - digitalocean_token | length > 0
+        fail_msg: digitalocean_token should be defined in tests/integration/integration_config.yml
+
+    - name: Get billing history information
+      digitalocean.cloud.billing_history_info:
+        token: "{{ digitalocean_token }}"
+      register: result
+
+    - name: No billing history block
+      when: result.msg == "No billing history information"
+      block:
+        - name: Verify no billing history information
+          ansible.builtin.assert:
+            that:
+              - not result.changed
+
+    - name: Current billing history information block
+      when: result.msg == "Current billing history information"
+      block:
+        - name: Verify current billing history information
+          ansible.builtin.assert:
+            that:
+              - not result.changed
+              - result.billing_history is list

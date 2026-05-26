@@ -1,0 +1,22 @@
+---
+# code: language=ansible
+- name: 02_fail | Testing block
+  block:
+    - name: 02_fail | Test fail mode
+      digitalocean.cloud.one_click:
+        state: present
+        token: "{{ digitalocean_token }}"
+        addon_slugs: "{{ addon_slugs }}"
+        cluster_uuid: "{{ cluster_uuid }}"
+      ignore_errors: true  # Expected to fail
+      register: result
+
+    - name: 02_fail | Verify fail mode
+      ansible.builtin.assert:
+        that:
+          - not result.changed
+          - result.failed
+          - result.msg is search("could not find cluster")
+          - result.error.Message is search("could not find cluster")
+          - result.error.Reason == "Not Found"
+          - result["error"]["Status Code"] == 404

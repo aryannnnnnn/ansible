@@ -1,0 +1,33 @@
+# code: language=ansible
+- name: 01_snapshot | Testing block
+  block:
+    - name: 01_snapshot | Create Droplet snapshot
+      when: true
+      digitalocean.cloud.droplet_action_snapshot:
+        token: "{{ digitalocean_token }}"
+        state: present
+        name: "{{ droplet_name }}"
+        region: "{{ droplet_region }}"
+        snapshot_name: "{{ snapshot_name }}"
+        timeout: 600
+      register: result
+
+    - name: 01_snapshot | Verify create Droplet snapshot
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - result.msg == "Droplet " ~ droplet_name ~ " (" ~ result.action.resource_id ~ ") in " ~ droplet_region ~ " sent action 'snapshot'"
+
+    - name: 01_snapshot | Delete snapshot
+      when: true
+      digitalocean.cloud.snapshot:
+        token: "{{ digitalocean_token }}"
+        state: absent
+        snapshot_name: "{{ snapshot_name }}"
+      register: result
+
+    - name: 01_snapshot | Verify delete snapshot
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - result.msg == "Deleted snapshot " ~ result.snapshot.id

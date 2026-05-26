@@ -1,0 +1,26 @@
+name: Publish Collection on Galaxy
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    name: Build and publish the Collection on Galaxy
+    runs-on: ubuntu-22.04
+    environment: main
+    timeout-minutes: 5
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Build and publish
+        uses: artis3n/ansible_galaxy_collection@v2
+        with:
+          api_key: '${{ secrets.GALAXY_TOKEN }}'

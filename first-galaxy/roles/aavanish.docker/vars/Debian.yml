@@ -1,0 +1,14 @@
+---
+docker_obsolete_packages:
+  - docker
+  - docker.io
+  - docker-engine
+  - docker-doc
+  - docker-compose
+  - docker-compose-v2
+  - podman-docker
+  - containerd
+  - runc
+
+os_packages:
+  - name: python3-docker

@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "digitalocean"
+version = "0.0.1"
+description = "Ansible DigitalOcean Collection"
+authors = ["Mark Mercado <mmercado@digitalocean.com>", "Ari Kalfus <akalfus@digitalocean.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "~3.11.11"
+ansible-core = "^2.19.4"
+azure-core = "1.36.0"
+pydo = "^0.23.0"
+boto3 = "^1.40.69"
+jmespath = "^1.0.1"
+setuptools = "80.9.0"
+certifi = "2025.10.5"
+aiohttp = "3.13.2"
+cryptography = "46.0.3"
+
+[tool.poetry.group.dev.dependencies]
+ansible-lint = { version = "^25.9.2", markers = "platform_system != 'Windows'" }
+black = "24.8.0"
+pre-commit = "3.8.0"
+pylint = "3.3.0"
+pytest = "8.3.3"
+pytest-xdist = "^3.5.0"
+antsibull-changelog = "0.30.0"
+antsibull-docs = "2.14.0"
+autopep8 = "^2.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["."]
+executionEnvironments = [
+  { root = ".", pythonVersion = "3.11", extraPaths = ["../../.."] }
+]
+extraPaths = ["../../.."]

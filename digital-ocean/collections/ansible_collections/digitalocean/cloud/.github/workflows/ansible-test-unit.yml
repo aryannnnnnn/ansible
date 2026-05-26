@@ -1,0 +1,39 @@
+name: Unit tests
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  units:
+    runs-on: ubuntu-22.04
+    environment: main
+    timeout-minutes: 30
+    name: Units (Ⓐ${{ matrix.versions.ansible }} on ${{ matrix.versions.python }})
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        # https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html
+        versions:
+          - ansible: stable-2.15
+            python: "3.11"
+          - ansible: stable-2.16
+            python: "3.11"
+          - ansible: stable-2.17
+            python: "3.11"
+          - ansible: devel
+            python: "3.12"
+
+    steps:
+      - name: Perform testing
+        uses: ansible-community/ansible-test-gh-action@release/v1
+        with:
+          ansible-core-version: ${{ matrix.versions.ansible }}
+          origin-python-version: ${{ matrix.versions.python }}
+          target-python-version: ${{ matrix.versions.python }}
+          testing-type: units
