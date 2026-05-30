@@ -1,0 +1,8 @@
+---
+- hosts: app
+  roles:
+    - application-server-setup
+
+- hosts: db
+  roles:
+    - database-server-setup

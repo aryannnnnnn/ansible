@@ -1,0 +1,11 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for application-server-setup
+- name: "Update & Upgrade System Dependencies"
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: "Install Docker"
+  role:
+    - geerlingguy.docker

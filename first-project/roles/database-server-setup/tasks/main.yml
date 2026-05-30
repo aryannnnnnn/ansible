@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for database-server-setup
+- name: "Update & Upgrade System Dependencies"
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
