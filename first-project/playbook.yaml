@@ -1,8 +1,9 @@
 ---
+
 - hosts: app
   roles:
     - application-server-setup
 
-- hosts: db
+- hosts: app
   roles:
-    - database-server-setup
+    - nginx-configure

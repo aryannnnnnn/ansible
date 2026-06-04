@@ -6,6 +6,77 @@
     update_cache: yes
     upgrade: dist
 
+- name: "Check if Docker Exists"
+  ansible.builtin.command: "docker --version"
+  register: docker_v_result
+  ignore_errors: true
+
+- name: "Docker Check Results"
+  ansible.builtin.debug:
+    msg: "Docker does not exist, going to install"
+  when: docker_v_result.rc != 0
+
 - name: "Install Docker"
-  role:
-    - geerlingguy.docker
+  ansible.builtin.include_role:
+    name: geerlingguy.docker
+  when: docker_v_result.rc != 0
+
+- name: "Docker Check Results"
+  ansible.builtin.debug:
+    msg: "Docker does exist, going to skip installation"
+  when: docker_v_result.rc == 0
+
+- name: "Git clone frontend"
+  ansible.builtin.git:
+    repo: "{{ notes_fe }}"
+    dest: "{{ fe_directory_location }}"
+    version: "{{ notes_fe_branch }}"
+    force: yes
+
+- name: "Git clone backend"
+  ansible.builtin.git:
+    repo: "{{ notes_be }}"
+    dest: "{{ be_directory_location }}"
+    version: "{{ notes_be_branch }}"
+    force: yes
+
+- name: "Spin Postgres Container"
+  ansible.builtin.include_role: 
+    name: database-server-setup
+
+- name: "Build Image from backend repo"
+  ansible.builtin.command:
+    chdir: "{{ be_directory_location }}"
+    cmd: "docker build -t {{ be_image_name }} ."
+
+- name: "Copy Env Vars"
+  ansible.builtin.copy:
+    content: "{{ backend_env_vars }}"
+    dest: "{{ be_directory_location }}/.env"
+    mode: 600
+
+- name: "Check if container Exists"
+  ansible.builtin.command: "docker inspect --type=container {{ be_container_name }}"
+  register: container_check_result
+  ignore_errors: true
+
+- name: "Container check results"
+  ansible.builtin.debug:
+    msg: "Container does not exist, continueing to creating one"
+  when: container_check_result.rc != 0
+
+- name: "Container check results"
+  ansible.builtin.debug:
+    msg: "Container exists, going to remove and create new"
+  when: container_check_result.rc == 0
+
+- name: "Remove container"
+  ansible.builtin.command: "docker rm -f {{ be_container_name }}"
+
+- name: "Run Backend Container"
+  ansible.builtin.command: "docker run -d --env-file {{ be_directory_location }}/.env -p 8000:8000 --add-host=host.docker.internal:host-gateway --name {{ be_container_name }} {{ be_image_name }}"
+
+- name: "Remove Env Vars"
+  ansible.builtin.file:
+    path: "{{ be_directory_location }}/.env"
+    state: absent

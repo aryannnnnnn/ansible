@@ -1,7 +1,19 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for database-server-setup
-- name: "Update & Upgrade System Dependencies"
-  ansible.builtin.apt:
-    update_cache: yes
-    upgrade: dist
+
+- name: "Create Directory for Postgres"
+  ansible.builtin.file:
+    path: /opt/postgres
+    state: directory
+    mode: 755
+
+- name: "Copy Yaml file for Postgres"
+  ansible.builtin.template:
+    src: postgres.yaml
+    dest: /opt/postgres/postgres.yaml
+    mode: 600
+
+- name: "Run Postgres Container"
+  ansible.builtin.command:
+    cmd: "docker compose -f /opt/postgres/postgres.yaml up -d"

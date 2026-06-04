@@ -1,0 +1,15 @@
+# repo url
+notes_be: "https://github.com/aryannnnnnn/notes-be.git"
+notes_fe: "https://github.com/aryannnnnnn/notes-fe.git"
+
+# branch name
+notes_be_branch: "main"
+notes_fe_branch: "main"
+
+# local fs location
+be_directory_location: "/opt/notes_be"
+fe_directory_location: "/var/www/notes_fe"
+
+# docker configuration
+be_image_name: "notes_be"
+be_container_name: "notes_be"
