@@ -1,1 +1,7 @@
 passwords.txt
+
+# Ansible Vault password files — never commit these
+vault.pass
+*.pass
+vault_pass*
+.vault_pass*
